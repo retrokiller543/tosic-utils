@@ -21,7 +21,7 @@ impl Query for QueryBuilder<Delete> {
     fn construct(self) -> String {
         let mut query = String::new();
         query.push_str(Self::STATEMENT);
-        query.push_str(" ");
+        query.push(' ');
 
         if self.only {
             query.push_str("ONLY ");
@@ -29,7 +29,7 @@ impl Query for QueryBuilder<Delete> {
 
         query.push_str(&self.table);
 
-        query.push_str(" ");
+        query.push(' ');
         query.push_str(&self.filter.construct());
 
         if self.only {

@@ -3,10 +3,6 @@
 
 use crate::db::DatabaseError;
 use crate::error::Error;
-use once_cell::sync::Lazy;
-use surrealdb::engine::local::Db;
-use surrealdb::engine::remote::ws::Client;
-use surrealdb::Surreal;
 
 pub mod db;
 pub mod error;

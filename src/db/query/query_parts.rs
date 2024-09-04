@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 use surrealdb::sql::Value;
 
 #[inline]
-pub(crate) fn content(content: Option<BTreeMap<String, Value>>, query: &mut String) -> () {
+pub(crate) fn content(content: Option<BTreeMap<String, Value>>, query: &mut String) {
     if let Some(content) = content {
         query.push_str(" CONTENT {");
 

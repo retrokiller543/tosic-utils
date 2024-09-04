@@ -71,7 +71,7 @@ where
         Self {
             fields: None,
             table: table.to_string(),
-            filter: Filter::new(),
+            filter: Filter::default(),
             content: None,
             order: None,
             group_by: None,

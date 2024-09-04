@@ -51,7 +51,7 @@ pub fn get_filter_query(filter: &InnerFilter) -> String {
 /// ```
 /// # use surrealdb_abstraction::db::Filter;
 ///
-/// let filter = Filter::new()
+/// let filter = Filter::default()
 ///     .add_condition("username".to_string(), None, "admin")
 ///     .add_condition("age".to_string(), Some(">".to_string()), 18)
 ///     .construct();
@@ -59,14 +59,10 @@ pub fn get_filter_query(filter: &InnerFilter) -> String {
 /// assert_eq!(filter, "WHERE age > 18 AND username = 'admin'".to_string());
 /// ```
 ///
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Filter(InnerFilter);
 
 impl Filter {
-    pub fn new() -> Self {
-        Self(BTreeMap::new())
-    }
-
     pub fn add_condition<T>(
         mut self,
         field: FilterField,

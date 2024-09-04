@@ -6,7 +6,6 @@ use crate::db::create::Create;
 use crate::db::query::select::Select;
 use crate::test::init_db;
 use crate::TEST_DB;
-use surrealdb::engine::local::Mem;
 use surrealdb::sql::Thing;
 
 #[derive(Debug, serde::Deserialize, serde::Serialize, Clone)]
@@ -48,7 +47,7 @@ impl Default for TestData {
 
 #[test]
 fn test() {
-    let filter = Filter::new()
+    let filter = Filter::default()
         .add_condition("username".to_string(), None, "admin")
         .add_condition("age".to_string(), Some(">".to_string()), 18);
 

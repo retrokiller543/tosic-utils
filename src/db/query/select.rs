@@ -36,7 +36,7 @@ impl Query for QueryBuilder<Select> {
 
         // Start with the query type
         query.push_str(Self::STATEMENT);
-        query.push_str(" ");
+        query.push(' ');
 
         // Fields to select
         let fields = if let Some(fields) = self.fields {
