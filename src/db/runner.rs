@@ -1,12 +1,12 @@
 use super::error::DatabaseError;
 use crate::db::query::traits::{Query, Statement};
+use crate::db::QueryBuilder;
 use crate::{InternalResult, Result};
 use log::error;
 use once_cell::sync::Lazy;
 use std::sync::Arc;
 use surrealdb::opt::QueryResult;
 use surrealdb::{Connection, Surreal};
-use crate::db::QueryBuilder;
 
 pub(crate) struct Runner;
 
@@ -15,7 +15,10 @@ impl Runner {
         Self
     }
 
-    fn handle_response<U>(mut res: surrealdb::Response, index: impl QueryResult<U>) -> InternalResult<U>
+    fn handle_response<U>(
+        mut res: surrealdb::Response,
+        index: impl QueryResult<U>,
+    ) -> InternalResult<U>
     where
         U: serde::de::DeserializeOwned,
     {
@@ -23,7 +26,7 @@ impl Runner {
             Ok(data) => data,
             Err(err) => {
                 error!("Error running query: {}", err);
-                return Err(DatabaseError::ResponseError(err))
+                return Err(DatabaseError::ResponseError(err));
             }
         };
 
@@ -46,7 +49,7 @@ impl Runner {
             Ok(res) => res,
             Err(err) => {
                 error!("Error running query: {} with error: {}", query, err);
-                return Err(DatabaseError::TransactionError(err))
+                return Err(DatabaseError::TransactionError(err));
             }
         };
 
@@ -69,7 +72,7 @@ impl Runner {
             Ok(res) => res,
             Err(err) => {
                 error!("Error running query: {} with error: {}", query, err);
-                return Err(DatabaseError::TransactionError(err))
+                return Err(DatabaseError::TransactionError(err));
             }
         };
 
@@ -77,12 +80,12 @@ impl Runner {
     }
 }
 
-impl<Type> QueryBuilder<Type> where Self: Query, Type: Statement + ?Sized {
-    pub async fn run<C, U>(
-        self,
-        db: &Arc<Surreal<C>>,
-        index: impl QueryResult<U>,
-    ) -> Result<U>
+impl<Type> QueryBuilder<Type>
+where
+    Self: Query,
+    Type: Statement + ?Sized,
+{
+    pub async fn run<C, U>(self, db: &Arc<Surreal<C>>, index: impl QueryResult<U>) -> Result<U>
     where
         C: Connection,
         U: serde::de::DeserializeOwned,
@@ -99,6 +102,8 @@ impl<Type> QueryBuilder<Type> where Self: Query, Type: Statement + ?Sized {
         C: Connection,
         U: serde::de::DeserializeOwned,
     {
-        Runner::run_lazy(db, self, index).await.map_err(|e| e.into())
+        Runner::run_lazy(db, self, index)
+            .await
+            .map_err(|e| e.into())
     }
 }

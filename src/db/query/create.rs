@@ -1,10 +1,10 @@
-use log::debug;
 use crate::db::query::traits::{Query, Statement};
 use crate::db::QueryBuilder;
+use crate::prelude::query::query_parts::content;
+use crate::{impl_content, impl_only, impl_parallel, impl_timeout};
+use log::debug;
 use std::collections::BTreeMap;
 use surrealdb::sql::Value;
-use crate::{impl_content, impl_only, impl_parallel, impl_timeout};
-use crate::prelude::query::query_parts::content;
 
 pub struct Create;
 

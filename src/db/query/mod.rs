@@ -1,19 +1,19 @@
 pub mod create;
 pub mod delete;
 pub mod insert;
-pub mod select;
-pub mod update;
-pub mod traits;
-pub mod relate;
 mod query_parts;
+pub mod relate;
+pub mod select;
+pub mod traits;
+pub mod update;
 
 pub use create::*;
 pub use delete::*;
 pub use insert::*;
-pub use select::*;
-pub use update::*;
 pub use relate::*;
+pub use select::*;
 pub use traits::*;
+pub use update::*;
 
 use super::filter::Filter;
 use std::collections::BTreeMap;
@@ -232,7 +232,7 @@ where
     }
 
     #[inline]
-    fn relate_items_internal(mut self, from: Thing, to: Thing ) -> Self {
+    fn relate_items_internal(mut self, from: Thing, to: Thing) -> Self {
         self.relation = Some((from, to));
 
         self
@@ -371,7 +371,11 @@ macro_rules! impl_timeout {
 #[macro_export]
 macro_rules! impl_content {
     () => {
-        pub fn add_field_to_content<T>(self, field: &str, content: T) -> Self where Value: From<T>, T: Into<Value> {
+        pub fn add_field_to_content<T>(self, field: &str, content: T) -> Self
+        where
+            Value: From<T>,
+            T: Into<Value>,
+        {
             self.add_field_to_content_internal(field.to_string(), content.into())
         }
 

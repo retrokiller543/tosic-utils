@@ -1,9 +1,9 @@
-use log::debug;
-use crate::{impl_content, impl_only, impl_parallel, impl_relation, impl_timeout};
-use crate::prelude::*;
-use surrealdb::sql::{Value, Thing};
-use std::collections::BTreeMap;
 use crate::db::query::query_parts::content;
+use crate::prelude::*;
+use crate::{impl_content, impl_only, impl_parallel, impl_relation, impl_timeout};
+use log::debug;
+use std::collections::BTreeMap;
+use surrealdb::sql::{Thing, Value};
 
 pub struct Relate;
 
@@ -29,7 +29,14 @@ impl Query for QueryBuilder<Relate> {
 
         let only = if self.only { " ONLY" } else { "" };
 
-        let mut query = format!("{}{} {}->{}->{}", Self::STATEMENT, only, from, self.table, to);
+        let mut query = format!(
+            "{}{} {}->{}->{}",
+            Self::STATEMENT,
+            only,
+            from,
+            self.table,
+            to
+        );
 
         content(self.content, &mut query);
 

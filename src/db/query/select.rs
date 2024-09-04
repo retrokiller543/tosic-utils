@@ -1,5 +1,6 @@
 use super::*;
 use crate::db::filter::Filter;
+use crate::db::query::traits::Query;
 use crate::{
     impl_fetch_fields, impl_fields, impl_filter, impl_group_all, impl_group_by, impl_limit,
     impl_omit_fields, impl_only, impl_order_by, impl_parallel, impl_start,
@@ -7,7 +8,6 @@ use crate::{
 use log::debug;
 use std::collections::BTreeMap;
 use surrealdb::sql::Value;
-use crate::db::query::traits::Query;
 
 #[derive(Clone)]
 pub struct Select;

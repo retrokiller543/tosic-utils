@@ -1,13 +1,13 @@
 #![cfg(test)]
 
-use surrealdb::engine::local::Mem;
-use surrealdb::sql::Thing;
 use super::filter::*;
 use super::query::*;
 use crate::db::create::Create;
 use crate::db::query::select::Select;
 use crate::test::init_db;
 use crate::TEST_DB;
+use surrealdb::engine::local::Mem;
+use surrealdb::sql::Thing;
 
 #[derive(Debug, serde::Deserialize, serde::Serialize, Clone)]
 struct TestData {
@@ -18,11 +18,17 @@ struct TestData {
 
 impl TestData {
     pub fn new(name: String, age: i32) -> Self {
-        Self { id: None, name, age }
+        Self {
+            id: None,
+            name,
+            age,
+        }
     }
 
     pub fn create_query(&self) -> QueryBuilder<Create> {
-        Create::query("test_data").add_field_to_content("name", self.name.clone()).add_field_to_content("age", self.age)
+        Create::query("test_data")
+            .add_field_to_content("name", self.name.clone())
+            .add_field_to_content("age", self.age)
     }
 
     pub fn select_all_query(&self) -> QueryBuilder<Select> {
@@ -83,7 +89,11 @@ async fn test_relate() -> anyhow::Result<()> {
     let to: Vec<TestData> = data.create_query().run_lazy(&TEST_DB, 0).await?;
     let from: Vec<TestData> = from.create_query().run_lazy(&TEST_DB, 0).await?;
 
-    let query = Relate::query("relation").relate_items(from[0].clone().id.unwrap(), to[0].clone().id.unwrap()).add_field_to_content("type", "friendship").set_parallel(true).construct();
+    let query = Relate::query("relation")
+        .relate_items(from[0].clone().id.unwrap(), to[0].clone().id.unwrap())
+        .add_field_to_content("type", "friendship")
+        .set_parallel(true)
+        .construct();
 
     TEST_DB.query(query).await?;
 
@@ -98,10 +108,16 @@ async fn test_relate() -> anyhow::Result<()> {
 async fn test_construct_create_query() -> anyhow::Result<()> {
     let data = TestData::default();
 
-    let query = data.create_query().add_field_to_content("type", "friendship").construct();
+    let query = data
+        .create_query()
+        .add_field_to_content("type", "friendship")
+        .construct();
 
     println!("{}", query);
-    assert_eq!(query, "CREATE test_data CONTENT { age: 18,  name: 'John Doe'}");
+    assert_eq!(
+        query,
+        "CREATE test_data CONTENT { age: 18,  name: 'John Doe'}"
+    );
 
     Ok(())
 }
