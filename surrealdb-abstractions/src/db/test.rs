@@ -5,8 +5,10 @@ use super::query::*;
 use crate::db::create::Create;
 use crate::db::query::select::Select;
 use crate::test::init_db;
-use crate::TEST_DB;
+use crate::test::TEST_DB;
+use log::info;
 use surrealdb::sql::Thing;
+use tosic_logging_utils::init_test_logger;
 
 #[derive(Debug, serde::Deserialize, serde::Serialize, Clone)]
 struct TestData {
@@ -80,6 +82,7 @@ async fn test_run_query() -> anyhow::Result<()> {
 
 #[tokio::test]
 async fn test_relate() -> anyhow::Result<()> {
+    init_test_logger("debug");
     let data = TestData::default();
     let from = TestData::new("Emil".to_string(), 69);
 
@@ -98,7 +101,7 @@ async fn test_relate() -> anyhow::Result<()> {
 
     let res: Vec<TestData> = data.select_all_query().run_lazy(&TEST_DB, 0).await?;
 
-    println!("Selected data: {:?}", res);
+    info!("Selected data: {:?}", res);
 
     Ok(())
 }

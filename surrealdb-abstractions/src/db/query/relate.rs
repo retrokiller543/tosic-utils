@@ -49,7 +49,6 @@ impl Query for QueryBuilder<Relate> {
         }
 
         debug!("Constructed query: {}", query);
-        dbg!(&query);
 
         query
     }

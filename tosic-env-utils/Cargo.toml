@@ -1,0 +1,13 @@
+[package]
+name = "tosic-env-utils"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dotenv = { workspace = true, optional = true }
+
+[features]
+default = []
+dotenv = ["dep:dotenv"]
+log = []
+tracing = []
