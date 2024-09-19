@@ -4,9 +4,10 @@ use super::filter::*;
 use super::query::*;
 use crate::db::create::Create;
 use crate::db::query::select::Select;
-use crate::test::init_db;
 use crate::test::TEST_DB;
+use crate::test::{db, init_db};
 use log::info;
+use std::sync::Arc;
 use surrealdb::sql::Thing;
 use tosic_logging_utils::init_test_logger;
 
@@ -60,20 +61,24 @@ fn test() {
         .add_field("name", Some("username"))
         .construct();
 
-    println!("{}", query);
+    let excepted =
+        "SELECT *, name AS username FROM user WHERE age > 18 AND username = 'admin' LIMIT 1"
+            .to_string();
+
+    assert_eq!(query, excepted);
 }
 
 #[tokio::test]
 async fn test_run_query() -> anyhow::Result<()> {
     let data = TestData::default();
 
-    init_db().await?;
+    let db = Arc::new(db().await?);
 
-    let res: Vec<TestData> = data.create_query().run_lazy(&TEST_DB, 0).await?;
+    let res: Vec<TestData> = data.create_query().run(&db, 0).await?;
 
     println!("Created data: {:?}", res);
 
-    let res: Vec<TestData> = data.select_all_query().run_lazy(&TEST_DB, 0).await?;
+    let res: Vec<TestData> = data.select_all_query().run(&db, 0).await?;
 
     println!("Selected data: {:?}", res);
 
@@ -86,10 +91,10 @@ async fn test_relate() -> anyhow::Result<()> {
     let data = TestData::default();
     let from = TestData::new("Emil".to_string(), 69);
 
-    init_db().await?;
+    let db = Arc::new(db().await?);
 
-    let to: Vec<TestData> = data.create_query().run_lazy(&TEST_DB, 0).await?;
-    let from: Vec<TestData> = from.create_query().run_lazy(&TEST_DB, 0).await?;
+    let to: Vec<TestData> = data.create_query().run(&db, 0).await?;
+    let from: Vec<TestData> = from.create_query().run(&db, 0).await?;
 
     let query = Relate::query("relation")
         .relate_items(from[0].clone().id.unwrap(), to[0].clone().id.unwrap())
@@ -97,9 +102,9 @@ async fn test_relate() -> anyhow::Result<()> {
         .set_parallel(true)
         .construct();
 
-    TEST_DB.query(query).await?;
+    db.query(query).await?;
 
-    let res: Vec<TestData> = data.select_all_query().run_lazy(&TEST_DB, 0).await?;
+    let res: Vec<TestData> = data.select_all_query().run(&db, 0).await?;
 
     info!("Selected data: {:?}", res);
 
@@ -118,7 +123,7 @@ async fn test_construct_create_query() -> anyhow::Result<()> {
     println!("{}", query);
     assert_eq!(
         query,
-        "CREATE test_data CONTENT { age: 18,  name: 'John Doe'}"
+        "CREATE test_data CONTENT { age: 18,  name: 'John Doe',  type: 'friendship'}"
     );
 
     Ok(())
@@ -131,7 +136,7 @@ async fn test_construct_select_query() -> anyhow::Result<()> {
     let query = data.select_all_query().construct();
 
     println!("{}", query);
-    assert_eq!(query, "SELECT * FROM test_data".to_string());
+    assert_eq!(query, "SELECT * FROM test_data ".to_string());
 
     Ok(())
 }

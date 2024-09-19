@@ -15,6 +15,7 @@ pub(crate) type InternalResult<T> = std::result::Result<T, DatabaseError>;
 mod test {
     use super::*;
     use once_cell::sync::Lazy;
+    use surrealdb::engine::local::{Db, Mem};
     use surrealdb::engine::remote::ws::Client;
     use surrealdb::engine::remote::ws::Ws;
     use surrealdb::Surreal;
@@ -26,6 +27,13 @@ mod test {
         TEST_DB.use_ns("test").use_db("test").await?;
 
         Ok(())
+    }
+
+    pub async fn db() -> anyhow::Result<Surreal<Db>> {
+        let db = Surreal::new::<Mem>(()).await?;
+        db.use_ns("test").use_db("test").await?;
+
+        Ok(db)
     }
 
     pub fn init_tracing() {
