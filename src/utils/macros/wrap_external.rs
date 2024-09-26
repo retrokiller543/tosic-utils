@@ -1,4 +1,21 @@
 #[macro_export]
+/// Wrap an external type in a struct that implements `Deref` and `DerefMut`.
+///
+/// This can be helpful when using external types that does not impl the correct traits and needs a manual implementation.
+///
+/// The `Deref` and `DerefMut` traits are implemented for the wrapped type and allows for seamless usage of the external type.
+///
+/// # Examples
+///
+/// ```rust
+/// use tosic_utils::wrap_external_type;
+///
+/// wrap_external_type! {
+///     #[derive(Debug)]
+///     pub struct MyExternalType(String);
+/// }
+/// ```
+///
 macro_rules! wrap_external_type {
     (
         $(#[$meta:meta])*
