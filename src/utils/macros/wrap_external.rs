@@ -9,7 +9,6 @@ macro_rules! wrap_external_type {
         )*
     ) => {
         $(#[$meta])*
-        #[doc("Wraps a type in the [`", stringify!($wrapped), "`] type.")]
         $vis struct $name($wrapped);
 
         impl std::ops::Deref for $name {
@@ -35,6 +34,12 @@ macro_rules! wrap_external_type {
         impl From<$name> for $wrapped {
             fn from(val: $name) -> Self {
                 val.0
+            }
+        }
+
+        impl std::iter::FromIterator<$name> for Vec<$wrapped> {
+            fn from_iter<T: IntoIterator<Item = $name>>(iter: T) -> Self {
+                iter.into_iter().collect()
             }
         }
 
