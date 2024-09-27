@@ -1,9 +1,7 @@
-use crate::db::filter::Filter;
 use crate::db::query::traits::{Query, Statement};
-use crate::db::query::QueryBuilder;
+use crate::db::QueryBuilder;
 use crate::{impl_filter, impl_only, impl_parallel};
 use log::debug;
-use surrealdb::sql::Value;
 
 pub struct Delete;
 

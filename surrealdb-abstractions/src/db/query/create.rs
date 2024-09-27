@@ -1,10 +1,9 @@
 use crate::db::query::traits::{Query, Statement};
+use crate::db::query::ContentType;
 use crate::db::QueryBuilder;
 use crate::prelude::query::query_parts::content;
 use crate::{impl_content, impl_only, impl_parallel, impl_timeout};
 use log::debug;
-use std::collections::BTreeMap;
-use surrealdb::sql::Value;
 
 pub struct Create;
 
@@ -30,7 +29,7 @@ impl Query for QueryBuilder<Create> {
 
         query.push_str(format!(" {}", self.table).as_str());
 
-        content(self.content, &mut query);
+        content(ContentType::Content, self.content, &mut query);
 
         if let Some((duration, unit)) = self.timeout {
             query.push_str(format!(" TIMEOUT {}{}", duration, unit).as_str());

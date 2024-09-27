@@ -61,7 +61,7 @@ pub use from;
 ///     pub struct MyObject {
 ///         id: Option<i32>,
 ///         name: String,
-///         age: i32
+///         age: i32,
 ///     }
 /// }
 ///

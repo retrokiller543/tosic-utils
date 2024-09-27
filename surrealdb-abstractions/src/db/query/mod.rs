@@ -20,6 +20,12 @@ use std::collections::BTreeMap;
 use std::marker::PhantomData;
 use surrealdb::sql::{Thing, Value};
 
+enum ContentType {
+    Content,
+    Merge,
+    Patch,
+}
+
 #[derive(Clone, Debug)]
 pub struct QueryBuilder<Type>
 where
@@ -37,6 +43,8 @@ where
 
     /// Filters (WHERE)
     filter: Filter,
+
+    /// Content, Merge or Patch
     content: Option<BTreeMap<String, Value>>,
 
     /// Orders (ORDER BY)
@@ -242,13 +250,13 @@ where
 #[macro_export]
 macro_rules! impl_filter {
     () => {
-        pub fn set_filter(self, filter: Filter) -> Self {
+        pub fn set_filter(self, filter: crate::db::Filter) -> Self {
             self.set_filter_internal(filter)
         }
 
         pub fn add_condition<T>(self, field: &str, operator: Option<&str>, value: T) -> Self
         where
-            Value: From<T>,
+            surrealdb::sql::Value: From<T>,
         {
             let operator = operator.map(|o| o.to_string());
             self.add_condition_internal(field.to_string(), operator, value)
@@ -299,7 +307,10 @@ macro_rules! impl_fields {
             self.add_field_internal(field.to_string(), alias.map(|s| s.to_string()))
         }
 
-        pub fn add_fields(self, fields: BTreeMap<String, Option<String>>) -> Self {
+        pub fn add_fields(
+            self,
+            fields: std::collections::BTreeMap<String, Option<String>>,
+        ) -> Self {
             self.add_fields_internal(fields)
         }
     };
@@ -373,13 +384,16 @@ macro_rules! impl_content {
     () => {
         pub fn add_field_to_content<T>(self, field: &str, content: T) -> Self
         where
-            Value: From<T>,
-            T: Into<Value>,
+            surrealdb::sql::Value: From<T>,
+            T: Into<surrealdb::sql::Value>,
         {
             self.add_field_to_content_internal(field.to_string(), content.into())
         }
 
-        pub fn set_content(self, content: BTreeMap<String, Value>) -> Self {
+        pub fn set_content(
+            self,
+            content: std::collections::BTreeMap<String, surrealdb::sql::Value>,
+        ) -> Self {
             self.set_content_internal(content)
         }
     };
@@ -388,7 +402,7 @@ macro_rules! impl_content {
 #[macro_export]
 macro_rules! impl_relation {
     () => {
-        pub fn relate_items(self, from: Thing, to: Thing) -> Self {
+        pub fn relate_items(self, from: surrealdb::sql::Thing, to: surrealdb::sql::Thing) -> Self {
             self.relate_items_internal(from, to)
         }
     };
