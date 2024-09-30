@@ -11,9 +11,9 @@ pub(crate) fn content(
 ) {
     if let Some(content) = content {
         match content_type {
-            ContentType::Content => query.push_str("CONTENT {"),
-            ContentType::Merge => query.push_str("Merge {"),
-            ContentType::Patch => query.push_str("PATCH {"),
+            ContentType::Content => query.push_str(" CONTENT {"),
+            ContentType::Merge => query.push_str(" Merge {"),
+            ContentType::Patch => query.push_str(" PATCH {"),
         }
 
         let mut contents = Vec::new();
