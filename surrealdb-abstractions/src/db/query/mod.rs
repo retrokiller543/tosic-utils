@@ -6,6 +6,7 @@ pub mod relate;
 pub mod select;
 pub mod traits;
 pub mod update;
+mod upsert;
 
 pub use create::*;
 pub use delete::*;
