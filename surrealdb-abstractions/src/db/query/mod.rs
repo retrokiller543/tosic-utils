@@ -6,7 +6,7 @@ pub mod relate;
 pub mod select;
 pub mod traits;
 pub mod update;
-mod upsert;
+pub mod upsert;
 
 pub use create::*;
 pub use delete::*;
@@ -15,6 +15,7 @@ pub use relate::*;
 pub use select::*;
 pub use traits::*;
 pub use update::*;
+pub use upsert::*;
 
 use super::filter::Filter;
 use std::collections::BTreeMap;
